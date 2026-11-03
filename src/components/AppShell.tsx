@@ -1,9 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, Calculator, Home, LogOut, Shield, Wallet, FileText } from "lucide-react";
+import { Bell, Calculator, Home, LogOut, Wallet, FileText } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useIsAdmin, useUser } from "@/hooks/use-auth";
 import { Logo } from "@/components/Logo";
 
 const nav = [
@@ -15,8 +14,6 @@ const nav = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { user } = useUser();
-  const { data: isAdmin } = useIsAdmin(user?.id);
   const qc = useQueryClient();
   const navigate = useNavigate();
 
@@ -40,12 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-1">
-            {isAdmin && (
-              <Link to="/admin" className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-primary hover:bg-muted">
-                <Shield className="h-4 w-4" /> Admin
-              </Link>
-            )}
-            <button onClick={signOut} aria-label="Sign out" className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
+                        <button onClick={signOut} aria-label="Sign out" className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
               <LogOut className="h-5 w-5" />
             </button>
           </div>

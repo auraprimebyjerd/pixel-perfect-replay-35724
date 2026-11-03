@@ -32,7 +32,7 @@ function CalculatorPage() {
         <div className="space-y-3">
           <Label>How much do you need?</Label>
           <Input type="number" inputMode="decimal" value={amount} min={rules.min} max={rules.max} onChange={(e) => setAmount(Number(e.target.value))} className="h-12 text-lg font-semibold" />
-          <Slider value={[Math.min(Math.max(amount, rules.min), rules.max)]} min={rules.min} max={rules.max} step={50} onValueChange={([v]) => setAmount(v)} />
+          <Slider value={[Math.min(Math.max(amount, rules.min), rules.max)]} min={rules.min} max={rules.max} step={50} onValueChange={([v]) => setAmount(v ?? rules.min)} />
           <div className="flex justify-between text-xs text-muted-foreground"><span>{cedi(rules.min)}</span><span>{cedi(rules.max)}</span></div>
         </div>
         <div className="space-y-3">

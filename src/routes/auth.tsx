@@ -45,7 +45,7 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const p = signUpSchema.safeParse(form);
-        if (!p.success) return void toast.error(p.error.issues[0].message);
+        if (!p.success) return void toast.error(p.error.issues[0]?.message ?? "Invalid input");
         const { error } = await supabase.auth.signUp({
           email: p.data.email,
           password: p.data.password,
@@ -55,13 +55,13 @@ function AuthPage() {
         setSent("Check your email to confirm your account, then sign in.");
       } else if (mode === "signin") {
         const p = signInSchema.safeParse(form);
-        if (!p.success) return void toast.error(p.error.issues[0].message);
+        if (!p.success) return void toast.error(p.error.issues[0]?.message ?? "Invalid input");
         const { error } = await supabase.auth.signInWithPassword(p.data);
         if (error) throw error;
         navigate({ to: "/dashboard" });
       } else {
         const p = z.string().trim().email("Enter a valid email").safeParse(form.email);
-        if (!p.success) return void toast.error(p.error.issues[0].message);
+        if (!p.success) return void toast.error(p.error.issues[0]?.message ?? "Invalid input");
         const { error } = await supabase.auth.resetPasswordForEmail(p.data, { redirectTo: window.location.origin + "/reset-password" });
         if (error) throw error;
         setSent("If that email has an account, a reset link is on its way.");
