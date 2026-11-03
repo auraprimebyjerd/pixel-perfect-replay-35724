@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Empty } from "@/components/Empty";
 import { cedi, shortDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -153,8 +154,4 @@ function Dashboard() {
       </div>
     </div>
   );
-}
-
-export function Empty({ text }: { text: string }) {
-  return <p className="py-8 text-center text-sm text-muted-foreground">{text}</p>;
 }
