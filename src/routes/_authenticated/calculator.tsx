@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useLendingRules, useQuote } from "@/hooks/use-lending";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,32 +13,6 @@ export const Route = createFileRoute("/_authenticated/calculator")({
   head: () => ({ meta: [{ title: "Loan calculator — EasyLoan" }, { name: "description", content: "See your rate and repayments before you apply." }] }),
   component: CalculatorPage,
 });
-
-export function useLendingRules() {
-  return useQuery({
-    queryKey: ["lending-rules"],
-    queryFn: async () => {
-      const [s, t] = await Promise.all([
-        supabase.from("lending_settings").select("*").eq("id", 1).single(),
-        supabase.from("loan_terms").select("*").eq("active", true).order("duration_months"),
-      ]);
-      return { min: Number(s.data?.min_amount ?? 0), max: Number(s.data?.max_amount ?? 0), terms: t.data ?? [] };
-    },
-  });
-}
-
-export function useQuote(amount: number, duration: number | null) {
-  return useQuery({
-    queryKey: ["quote", amount, duration],
-    enabled: !!duration && amount > 0,
-    retry: false,
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("calculate_loan", { p_amount: amount, p_duration: duration! });
-      if (error) throw error;
-      return data?.[0];
-    },
-  });
-}
 
 function CalculatorPage() {
   const { data: rules } = useLendingRules();
