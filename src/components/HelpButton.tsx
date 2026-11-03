@@ -28,7 +28,7 @@ export function HelpButton() {
         </SheetHeader>
         <div className="px-4 pb-6">
           <Accordion type="single" collapsible>
-            {faqs.map(([q, a]) => (
+            {faqs.map(([q = "", a]) => (
               <AccordionItem key={q} value={q}>
                 <AccordionTrigger className="text-left">{q}</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">{a}</AccordionContent>

@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 const searchSchema = z.object({ amount: z.number().optional(), duration: z.number().optional() });
 
 export const Route = createFileRoute("/_authenticated/apply")({
-  validateSearch: (s) => searchSchema.parse({ amount: s.amount ? Number(s.amount) : undefined, duration: s.duration ? Number(s.duration) : undefined }),
+  validateSearch: (s: Record<string, unknown>) => searchSchema.parse({ amount: s["amount"] ? Number(s["amount"]) : undefined, duration: s["duration"] ? Number(s["duration"]) : undefined }),
   head: () => ({ meta: [{ title: "Apply for a loan — EasyLoan" }, { name: "description", content: "Apply for an EasyLoan personal loan." }] }),
   component: ApplyPage,
 });
@@ -48,7 +48,7 @@ function ApplyPage() {
     });
   }, [user.id]);
   useEffect(() => {
-    if (rules && !f.duration && rules.terms[0]) setF((p) => ({ ...p, duration: rules.terms[0].duration_months }));
+    if (rules && !f.duration && rules.terms[0]) setF((p) => ({ ...p, duration: rules.terms[0]!.duration_months }));
   }, [rules, f.duration]);
 
   const quote = useQuote(f.amount, f.duration || null);
