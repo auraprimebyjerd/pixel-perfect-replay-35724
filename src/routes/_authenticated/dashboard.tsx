@@ -72,6 +72,14 @@ function Dashboard() {
         </Link>
       )}
 
+      <Link to="/instant-cash" className="flex items-center gap-3 rounded-2xl bg-card p-4 shadow-soft hover:bg-muted">
+        <Gift className="h-6 w-6 shrink-0 text-primary" />
+        <div className="flex-1 text-sm">
+          <p className="font-semibold">Claim instant cash</p>
+          <p className="text-muted-foreground">Upload your Ghana Card and get up to GH₵1,000 — once only.</p>
+        </div>
+      </Link>
+
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl bg-balance p-6 text-navy-foreground shadow-lift">
           <p className="text-sm text-navy-foreground/70">Available withdrawal balance</p>
