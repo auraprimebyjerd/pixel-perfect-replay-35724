@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StatusBadge } from "@/components/StatusBadge";
 import { Empty } from "@/components/Empty";
 import { cedi, shortDate } from "@/lib/format";
+import { cn } from "@/lib/utils";
+import { filterTransactions, TX_FILTERS, txLabel, type TxFilter } from "@/lib/transactions";
 
 export const Route = createFileRoute("/_authenticated/wallet")({
   head: () => ({ meta: [{ title: "Wallet — EasyLoan" }, { name: "description", content: "Your wallet balance and withdrawals." }] }),
