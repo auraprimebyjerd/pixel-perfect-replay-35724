@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownLeft, ArrowUpRight, Bell, FileText, ShieldCheck } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Bell, FileText, ShieldCheck , Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -71,6 +71,14 @@ function Dashboard() {
           </div>
         </Link>
       )}
+
+      <Link to="/instant-cash" className="flex items-center gap-3 rounded-2xl bg-card p-4 shadow-soft hover:bg-muted">
+        <Gift className="h-6 w-6 shrink-0 text-primary" />
+        <div className="flex-1 text-sm">
+          <p className="font-semibold">Claim instant cash</p>
+          <p className="text-muted-foreground">Upload your Ghana Card and get up to GH₵1,000 — once only.</p>
+        </div>
+      </Link>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl bg-balance p-6 text-navy-foreground shadow-lift">

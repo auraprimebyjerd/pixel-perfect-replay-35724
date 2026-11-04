@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedApplyRouteImport } from './routes/_authenticated/apply'
 import { Route as AuthenticatedCalculatorRouteImport } from './routes/_authenticated/calculator'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedInstantCashRouteImport } from './routes/_authenticated/instant-cash'
 import { Route as AuthenticatedKycRouteImport } from './routes/_authenticated/kyc'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated/wallet'
@@ -54,6 +55,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInstantCashRoute =
+  AuthenticatedInstantCashRouteImport.update({
+    id: '/instant-cash',
+    path: '/instant-cash',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedKycRoute = AuthenticatedKycRouteImport.update({
   id: '/kyc',
   path: '/kyc',
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/apply': typeof AuthenticatedApplyRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/instant-cash': typeof AuthenticatedInstantCashRoute
   '/kyc': typeof AuthenticatedKycRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
@@ -89,6 +97,7 @@ export interface FileRoutesByTo {
   '/apply': typeof AuthenticatedApplyRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/instant-cash': typeof AuthenticatedInstantCashRoute
   '/kyc': typeof AuthenticatedKycRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/wallet': typeof AuthenticatedWalletRoute
@@ -102,6 +111,7 @@ export interface FileRoutesById {
   '/_authenticated/apply': typeof AuthenticatedApplyRoute
   '/_authenticated/calculator': typeof AuthenticatedCalculatorRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/instant-cash': typeof AuthenticatedInstantCashRoute
   '/_authenticated/kyc': typeof AuthenticatedKycRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/wallet': typeof AuthenticatedWalletRoute
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/apply'
     | '/calculator'
     | '/dashboard'
+    | '/instant-cash'
     | '/kyc'
     | '/notifications'
     | '/wallet'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/apply'
     | '/calculator'
     | '/dashboard'
+    | '/instant-cash'
     | '/kyc'
     | '/notifications'
     | '/wallet'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/apply'
     | '/_authenticated/calculator'
     | '/_authenticated/dashboard'
+    | '/_authenticated/instant-cash'
     | '/_authenticated/kyc'
     | '/_authenticated/notifications'
     | '/_authenticated/wallet'
@@ -201,6 +214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/instant-cash': {
+      id: '/_authenticated/instant-cash'
+      path: '/instant-cash'
+      fullPath: '/instant-cash'
+      preLoaderRoute: typeof AuthenticatedInstantCashRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/kyc': {
       id: '/_authenticated/kyc'
       path: '/kyc'
@@ -229,6 +249,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedApplyRoute: typeof AuthenticatedApplyRoute
   AuthenticatedCalculatorRoute: typeof AuthenticatedCalculatorRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInstantCashRoute: typeof AuthenticatedInstantCashRoute
   AuthenticatedKycRoute: typeof AuthenticatedKycRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
@@ -238,6 +259,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedApplyRoute: AuthenticatedApplyRoute,
   AuthenticatedCalculatorRoute: AuthenticatedCalculatorRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInstantCashRoute: AuthenticatedInstantCashRoute,
   AuthenticatedKycRoute: AuthenticatedKycRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedWalletRoute: AuthenticatedWalletRoute,

@@ -44,6 +44,33 @@ export type Database = {
         }
         Relationships: []
       }
+      cash_claims: {
+        Row: {
+          amount: number
+          back_path: string
+          created_at: string
+          front_path: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          back_path: string
+          created_at?: string
+          front_path: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          back_path?: string
+          created_at?: string
+          front_path?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kyc_submissions: {
         Row: {
           admin_note: string | null
@@ -461,6 +488,10 @@ export type Database = {
         }[]
       }
       claim_first_admin: { Args: never; Returns: boolean }
+      claim_instant_cash: {
+        Args: { p_amount: number; p_back: string; p_front: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

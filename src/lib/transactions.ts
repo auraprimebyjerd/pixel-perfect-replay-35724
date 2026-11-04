@@ -7,7 +7,7 @@ export const TX_FILTERS: { key: TxFilter; label: string }[] = [
   { key: "repayment", label: "Repayments" },
 ];
 
-const IN_KINDS = new Set(["loan_disbursement", "adjustment"]);
+const IN_KINDS = new Set(["loan_disbursement", "adjustment", "instant_cash"]);
 const OUT_KINDS = new Set(["withdrawal"]);
 
 export function txCategory(kind: string): "in" | "out" | "repayment" {
@@ -26,6 +26,8 @@ export function txLabel(kind: string): string {
       return "Repayment";
     case "adjustment":
       return "Adjustment";
+    case "instant_cash":
+      return "Instant cash";
     default:
       return kind.charAt(0).toUpperCase() + kind.slice(1);
   }

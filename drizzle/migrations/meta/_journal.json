@@ -8,6 +8,13 @@
       "when": 1793673658605,
       "tag": "0000_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793752317210,
+      "tag": "0001_instant_cash_claims",
+      "breakpoints": true
     }
   ]
 }
