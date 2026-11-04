@@ -35,6 +35,8 @@ function WalletPage() {
     },
   });
   const [form, setForm] = useState({ amount: "", method: "", number: "", name: "" });
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<TxFilter>("all");
   const [busy, setBusy] = useState(false);
 
   async function submit(e: React.FormEvent) {
@@ -91,15 +93,61 @@ function WalletPage() {
           )}
         </div>
         <div className="rounded-3xl bg-card p-6 shadow-soft">
-          <h2 className="mb-2 font-semibold">Transactions</h2>
-          {d.txs.length === 0 ? <Empty text="No transactions yet." /> : (
-            <div className="divide-y">{d.txs.map((t) => (
-              <div key={t.id} className="flex items-center justify-between py-3">
-                <div><p className="text-sm font-medium">{t.description}</p><p className="text-xs text-muted-foreground">{shortDate(t.created_at)}</p></div>
-                <p className={Number(t.amount) < 0 ? "text-sm font-semibold text-destructive" : "text-sm font-semibold text-success"}>{cedi(t.amount)}</p>
+          <h2 className="mb-3 font-semibold">Transactions</h2>
+          <div className="space-y-3">
+            <Input
+              type="search"
+              placeholder="Search by description, type or amount…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <div className="flex flex-wrap gap-2">
+              {TX_FILTERS.map((f) => (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={() => setFilter(f.key)}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                    filter === f.key ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent",
+                  )}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {(() => {
+            if (d.txs.length === 0) return <Empty text="No transactions yet." />;
+            const filtered = filterTransactions(d.txs, search, filter);
+            if (filtered.length === 0) return <Empty text="No transactions match your search." />;
+            return (
+              <div className="mt-3 divide-y">
+                {filtered.map((t) => {
+                  const wd = t.kind === "withdrawal" && t.reference_id
+                    ? d.withdrawals.find((w) => w.id === t.reference_id)
+                    : undefined;
+                  return (
+                    <div key={t.id} className="py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium">{t.description}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {txLabel(t.kind)} · {shortDate(t.created_at)}
+                            {wd ? ` · ${wd.payment_methods?.name} · ${wd.account_number}` : ""}
+                          </p>
+                        </div>
+                        <p className={Number(t.amount) < 0 ? "text-sm font-semibold text-destructive" : "text-sm font-semibold text-success"}>{cedi(t.amount)}</p>
+                      </div>
+                      {wd && wd.account_name && (
+                        <p className="mt-1 text-xs text-muted-foreground">Paid to {wd.account_name}</p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            ))}</div>
-          )}
+            );
+          })()}
         </div>
       </div>
     </div>
