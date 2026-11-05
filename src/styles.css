@@ -102,6 +102,7 @@
   --gradient-card: linear-gradient(135deg, oklch(0.3 0.1 263), oklch(0.42 0.13 248));
   --shadow-soft: 0 1px 2px oklch(0.27 0.09 263 / 0.04), 0 8px 24px -12px oklch(0.27 0.09 263 / 0.18);
   --shadow-lift: 0 20px 40px -20px oklch(0.27 0.09 263 / 0.45);
+  --shadow-3d: inset 0 1px 0 oklch(1 0 0 / 0.6), 0 2px 0 oklch(0.27 0.09 263 / 0.08), 0 14px 30px -14px oklch(0.27 0.09 263 / 0.35);
 }
 
 @layer base {
@@ -134,6 +135,48 @@
 }
 @utility animate-rise {
   animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@utility animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+@utility animate-shine {
+  background-size: 200% auto;
+  animation: shine 4s linear infinite;
+}
+@utility card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.4s;
+  box-shadow: var(--shadow-3d);
+  &:hover {
+    transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-6px);
+    box-shadow: var(--shadow-lift), var(--shadow-3d);
+  }
+}
+@utility text-gradient {
+  background: linear-gradient(90deg, var(--sky), var(--navy-foreground), var(--sky));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 5s linear infinite;
+}
+@utility btn-3d {
+  box-shadow: 0 6px 0 color-mix(in oklab, var(--navy) 70%, black), var(--shadow-lift);
+  transition: transform 0.15s, box-shadow 0.15s;
+  &:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 color-mix(in oklab, var(--navy) 70%, black);
+  }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes shine {
+  to { background-position: 200% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .animate-shine, .text-gradient { animation: none; }
 }
 @keyframes rise {
   from { opacity: 0; transform: translateY(10px); }
