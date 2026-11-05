@@ -32,7 +32,8 @@ const signInSchema = signUpSchema.pick({ email: true, password: true });
 type Mode = "signin" | "signup" | "forgot";
 
 function AuthPage() {
-  const [mode, setMode] = useState<Mode>("signin");
+  const [mode, setMode] = useState<Mode>("signup")
+  const [notice, setNotice] = useState<string | null>(null);
   const [form, setForm] = useState({ full_name: "", phone: "", email: "", password: "" });
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
@@ -52,7 +53,11 @@ function AuthPage() {
           options: { emailRedirectTo: window.location.origin + "/dashboard", data: { full_name: p.data.full_name, phone: p.data.phone } },
         });
         if (error) throw error;
-        setSent("Check your email to confirm your account, then sign in.");
+        await supabase.auth.signOut();
+        setForm({ ...form, password: "" });
+        setMode("signin");
+        setNotice("Account created! Confirm your email using the link we sent, then log in with your email and password.");
+        toast.success("Account created — log in with your credentials");
       } else if (mode === "signin") {
         const p = signInSchema.safeParse(form);
         if (!p.success) return void toast.error(p.error.issues[0]?.message ?? "Invalid input");
@@ -87,6 +92,7 @@ function AuthPage() {
           <div className="mt-6 rounded-xl bg-secondary p-4 text-sm text-secondary-foreground">{sent}</div>
         ) : (
           <form onSubmit={submit} className="mt-6 space-y-4">
+            {notice && mode === "signin" && <div className="rounded-xl bg-success/10 p-3 text-sm font-medium text-success">{notice}</div>}
             {mode === "signup" && (
               <>
                 <Field label="Full name"><Input value={form.full_name} onChange={set("full_name")} autoComplete="name" /></Field>

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/instant-cash")({
   component: InstantCashPage,
 });
 
-export const CASH_AMOUNTS = [1, 200, 500, 1000];
+export const CASH_AMOUNTS = [200, 500, 1000];
 const MAX = 8 * 1024 * 1024;
 
 function InstantCashPage() {
