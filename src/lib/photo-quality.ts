@@ -20,8 +20,8 @@ export async function checkPhotoQuality(file: File): Promise<string | null> {
     const g = new Float32Array(W * H);
     let sum = 0;
     for (let p = 0; p < W * H; p++) {
-      g[p] = 0.299 * d[p * 4] + 0.587 * d[p * 4 + 1] + 0.114 * d[p * 4 + 2];
-      sum += g[p];
+      g[p] = 0.299 * d[p * 4]! + 0.587 * d[p * 4 + 1]! + 0.114 * d[p * 4 + 2]!;
+      sum += g[p]!;
     }
     const mean = sum / (W * H);
     if (mean < 45) return "Photo is too dark. Retake it in better light";
@@ -29,7 +29,7 @@ export async function checkPhotoQuality(file: File): Promise<string | null> {
     let s = 0, s2 = 0, n = 0;
     for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
       const i = y * W + x;
-      const l = 4 * g[i] - g[i - 1] - g[i + 1] - g[i - W] - g[i + W];
+      const l = 4 * g[i]! - g[i - 1]! - g[i + 1]! - g[i - W]! - g[i + W]!;
       s += l; s2 += l * l; n++;
     }
     const variance = s2 / n - (s / n) ** 2;
