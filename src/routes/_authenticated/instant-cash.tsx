@@ -122,7 +122,7 @@ function InstantCashPage() {
         </div>
         <p className="text-xs text-muted-foreground">Use a clear, well-lit photo with all four corners of the card visible.</p>
       </section>
-      <Button size="lg" className="h-14 w-full rounded-2xl text-base font-bold shadow-lift ring-4 ring-primary/20" onClick={submit} disabled={busy}>
+      <Button size="lg" className="h-14 w-full rounded-2xl text-base font-bold btn-3d ring-4 ring-primary/20" onClick={submit} disabled={busy}>
         {busy ? <Loader2 className="animate-spin" /> : <Gift />}Claim {amount ? `GH₵${amount.toLocaleString()}` : "instant cash"}
       </Button>
     </div>
