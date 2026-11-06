@@ -8,7 +8,7 @@ import { shortDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/notifications")({
-  head: () => ({ meta: [{ title: "Notifications — EasyLoan" }, { name: "description", content: "Updates on your account." }] }),
+  head: () => ({ meta: [{ title: "Notifications — EasyLoan" }, { name: "description", content: "Updates on your account." }, { property: "og:title", content: "Notifications — EasyLoan" }, { property: "og:description", content: "Updates on your account." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: NotificationsPage,
 });
 

@@ -17,7 +17,7 @@ const searchSchema = z.object({ amount: z.number().optional(), duration: z.numbe
 
 export const Route = createFileRoute("/_authenticated/apply")({
   validateSearch: (s: Record<string, unknown>) => searchSchema.parse({ amount: s["amount"] ? Number(s["amount"]) : undefined, duration: s["duration"] ? Number(s["duration"]) : undefined }),
-  head: () => ({ meta: [{ title: "Apply for a loan — EasyLoan" }, { name: "description", content: "Apply for an EasyLoan personal loan." }] }),
+  head: () => ({ meta: [{ title: "Apply for a loan — EasyLoan" }, { name: "description", content: "Apply for an EasyLoan personal loan." }, { property: "og:title", content: "Apply for a loan — EasyLoan" }, { property: "og:description", content: "Apply for an EasyLoan personal loan." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: ApplyPage,
 });
 

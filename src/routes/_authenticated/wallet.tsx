@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { filterTransactions, TX_FILTERS, txLabel, type TxFilter } from "@/lib/transactions";
 
 export const Route = createFileRoute("/_authenticated/wallet")({
-  head: () => ({ meta: [{ title: "Wallet — EasyLoan" }, { name: "description", content: "Your wallet balance and withdrawals." }] }),
+  head: () => ({ meta: [{ title: "Wallet — EasyLoan" }, { name: "description", content: "Your wallet balance and withdrawals." }, { property: "og:title", content: "Wallet — EasyLoan" }, { property: "og:description", content: "Your wallet balance and withdrawals." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: WalletPage,
 });
 

@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { StatusBadge } from "@/components/StatusBadge";
 
 export const Route = createFileRoute("/_authenticated/kyc")({
-  head: () => ({ meta: [{ title: "Identity verification — EasyLoan" }, { name: "description", content: "Verify your identity with your Ghana Card." }] }),
+  head: () => ({ meta: [{ title: "Identity verification — EasyLoan" }, { name: "description", content: "Verify your identity with your Ghana Card." }, { property: "og:title", content: "Identity verification — EasyLoan" }, { property: "og:description", content: "Verify your identity with your Ghana Card." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: KycPage,
 });
 

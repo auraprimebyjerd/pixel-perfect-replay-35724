@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_authenticated/instant-cash")({
   head: () => ({
     meta: [
       { title: "Claim instant cash — EasyLoan" },
-      { name: "description", content: "Upload your Ghana Card and get a one-time cash bonus in your wallet." },
+      { name: "description", content: "Upload your Ghana Card and get a one-time cash bonus in your wallet." }, { property: "og:title", content: "Claim instant cash — EasyLoan" }, { property: "og:description", content: "Upload your Ghana Card and get a one-time cash bonus in your wallet." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: InstantCashPage,

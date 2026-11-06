@@ -14,4 +14,11 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it("matches verification callbacks outside the protected dashboard layout", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    const matches = router.matchRoutes("/auth/callback");
+    expect(matches.at(-1)?.routeId).toBe("/auth/callback");
+    expect(matches.some((match) => match.routeId === "/_authenticated")).toBe(false);
+  });
 });

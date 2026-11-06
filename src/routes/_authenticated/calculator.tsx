@@ -10,7 +10,7 @@ import { cedi, errMsg } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/calculator")({
-  head: () => ({ meta: [{ title: "Loan calculator — EasyLoan" }, { name: "description", content: "See your rate and repayments before you apply." }] }),
+  head: () => ({ meta: [{ title: "Loan calculator — EasyLoan" }, { name: "description", content: "See your rate and repayments before you apply." }, { property: "og:title", content: "Loan calculator — EasyLoan" }, { property: "og:description", content: "See your rate and repayments before you apply." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: CalculatorPage,
 });
 

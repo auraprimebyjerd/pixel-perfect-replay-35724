@@ -10,7 +10,7 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Set a new password — EasyLoan" },
-      { name: "description", content: "Choose a new password for your EasyLoan account." },
+      { name: "description", content: "Choose a new password for your EasyLoan account." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Set a new password — EasyLoan" },
       { property: "og:description", content: "Choose a new password for your EasyLoan account." },
     ],

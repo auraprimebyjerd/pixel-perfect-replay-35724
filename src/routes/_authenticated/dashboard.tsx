@@ -10,7 +10,7 @@ import { Empty } from "@/components/Empty";
 import { cedi, shortDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — EasyLoan" }, { name: "description", content: "Your loans, wallet and activity." }] }),
+  head: () => ({ meta: [{ title: "Dashboard — EasyLoan" }, { name: "description", content: "Your loans, wallet and activity." }, { property: "og:title", content: "Dashboard — EasyLoan" }, { property: "og:description", content: "Your loans, wallet and activity." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Dashboard,
 });
 

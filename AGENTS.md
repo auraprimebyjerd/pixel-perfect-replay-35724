@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Email verification uses the existing client and public `/auth/callback` page to restore a session before navigating to `/dashboard`; the existing protected layout requires a confirmed email so unverified sessions cannot render private pages.

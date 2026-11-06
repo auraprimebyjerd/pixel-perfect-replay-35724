@@ -8,7 +8,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "EasyLoan — Fast, fair digital loans in Ghana" },
-      { name: "description", content: "Transparent personal loans with clear rates, Ghana Card verification and mobile money withdrawals." },
+      { name: "description", content: "Transparent personal loans with clear rates, Ghana Card verification and mobile money withdrawals." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "EasyLoan — Fast, fair digital loans in Ghana" },
       { property: "og:description", content: "Transparent personal loans with clear rates and mobile money withdrawals." },
     ],
