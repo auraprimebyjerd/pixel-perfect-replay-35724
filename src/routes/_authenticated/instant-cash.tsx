@@ -38,16 +38,6 @@ function InstantCashPage() {
   const [secret, setSecret] = useState("");
 
   if (claim.isLoading) return <Loader2 className="mx-auto mt-20 animate-spin" />;
-  if (claim.data) {
-    return (
-      <div className="mx-auto max-w-md rounded-3xl bg-card p-8 text-center shadow-soft">
-        <Gift className="mx-auto h-12 w-12 text-primary" />
-        <h1 className="mt-4 text-xl font-bold">Instant cash claimed</h1>
-        <p className="mt-2 text-sm text-muted-foreground">GH₵{Number(claim.data.amount).toLocaleString()} was added to your wallet. This bonus can only be claimed once.</p>
-        <Button asChild className="mt-6"><Link to="/wallet">Go to wallet</Link></Button>
-      </div>
-    );
-  }
 
   async function upload(kind: string, file: File) {
     if (file.size > MAX) throw new Error("Each image must be under 8MB");
@@ -81,7 +71,7 @@ function InstantCashPage() {
     <div className="mx-auto max-w-xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Claim instant cash</h1>
-        <p className="text-sm text-muted-foreground">A one-time bonus paid straight to your wallet. No repayment needed.</p>
+        <p className="text-sm text-muted-foreground">A bonus paid straight to your wallet. No repayment needed.</p>
       </div>
       <section className="space-y-4 rounded-3xl bg-card p-6 shadow-soft">
         <h2 className="font-semibold">Choose amount</h2>

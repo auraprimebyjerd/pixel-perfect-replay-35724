@@ -76,7 +76,7 @@ function Dashboard() {
         <Gift className="h-6 w-6 shrink-0 text-primary" />
         <div className="flex-1 text-sm">
           <p className="font-semibold">Claim instant cash</p>
-          <p className="text-muted-foreground">Upload your Ghana Card and get up to GH₵1,000 — once only.</p>
+          <p className="text-muted-foreground">Upload your Ghana Card and get up to GH₵1,000.</p>
         </div>
       </Link>
 

@@ -15,6 +15,13 @@
       "when": 1793752317210,
       "tag": "0001_instant_cash_claims",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794160243096,
+      "tag": "0002_repeatable_instant_cash_claims",
+      "breakpoints": true
     }
   ]
 }
