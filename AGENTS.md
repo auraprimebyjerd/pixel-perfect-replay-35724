@@ -9,4 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Email verification uses the existing client and public `/auth/callback` page to restore a session before navigating to `/dashboard`; the existing protected layout requires a confirmed email so unverified sessions cannot render private pages.
+- Registration uses Cloud Auth for password validation and account uniqueness, then clears protected caches and ends any automatic session before showing credential sign-in; the existing callback remains available for legacy confirmation links.

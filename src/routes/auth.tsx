@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/Logo";
 import { ResendVerification } from "@/components/ResendVerification";
 import { isEmailVerified, verificationRedirect } from "@/lib/email-verification";
+import { registerAccount } from "@/lib/account-registration";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -39,6 +41,7 @@ const signInSchema = signUpSchema.pick({ email: true, password: true });
 type Mode = "signin" | "signup" | "forgot";
 
 function AuthPage() {
+  const queryClient = useQueryClient();
   const [mode, setMode] = useState<Mode>("signup");
   const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -58,20 +61,26 @@ function AuthPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (busy) return;
     setBusy(true);
     try {
       if (mode === "signup") {
         const p = signUpSchema.safeParse(form);
         if (!p.success) return void toast.error(p.error.issues[0]?.message ?? "Invalid input");
-        const { error } = await supabase.auth.signUp({
-          email: p.data.email,
-          password: p.data.password,
-          options: { emailRedirectTo: verificationRedirect(window.location.origin), data: { full_name: p.data.full_name, phone: p.data.phone } },
+        const result = await registerAccount(supabase.auth, p.data, verificationRedirect(window.location.origin), async () => {
+          await queryClient.cancelQueries();
+          queryClient.clear();
         });
-        if (error) throw error;
         setForm({ ...form, password: "" });
-        setVerificationEmail(p.data.email);
-        setNotice("Check your email and tap Verify Email. You'll go straight to your dashboard without signing in again.");
+        if (result.needsConfirmation) {
+          setVerificationEmail(p.data.email);
+          setNotice("Email confirmation is still enabled. Check your email to activate your account.");
+        } else {
+          setVerificationEmail(null);
+          setMode("signin");
+          setNotice("Account created successfully! You can now log in with your credentials.");
+          navigate({ to: "/auth", replace: true });
+        }
       } else if (mode === "signin") {
         const p = signInSchema.safeParse(form);
         if (!p.success) return void toast.error(p.error.issues[0]?.message ?? "Invalid input");
@@ -119,7 +128,7 @@ function AuthPage() {
           <div className="mt-6 rounded-xl bg-secondary p-4 text-sm text-secondary-foreground">{sent}</div>
         ) : (
           <form onSubmit={submit} className="mt-6 space-y-4">
-            {notice && mode === "signin" && <div className="rounded-xl bg-success/10 p-3 text-sm font-medium text-success">{notice}</div>}
+            {notice && mode === "signin" && <div role="status" className="rounded-xl bg-success/10 p-3 text-sm font-medium text-success">{notice}</div>}
             {mode === "signup" && (
               <>
                 <Field label="Full name"><Input value={form.full_name} onChange={set("full_name")} autoComplete="name" /></Field>
