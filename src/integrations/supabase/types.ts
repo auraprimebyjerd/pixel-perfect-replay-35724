@@ -46,30 +46,47 @@ export type Database = {
       }
       cash_claims: {
         Row: {
+          account_name: string | null
+          account_number: string | null
           amount: number
           back_path: string
           created_at: string
           front_path: string
           id: string
+          payment_method_id: string | null
           user_id: string
         }
         Insert: {
+          account_name?: string | null
+          account_number?: string | null
           amount: number
           back_path: string
           created_at?: string
           front_path: string
           id?: string
+          payment_method_id?: string | null
           user_id: string
         }
         Update: {
+          account_name?: string | null
+          account_number?: string | null
           amount?: number
           back_path?: string
           created_at?: string
           front_path?: string
           id?: string
+          payment_method_id?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cash_claims_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kyc_submissions: {
         Row: {
@@ -490,6 +507,17 @@ export type Database = {
       claim_first_admin: { Args: never; Returns: boolean }
       claim_instant_cash: {
         Args: { p_amount: number; p_back: string; p_front: string }
+        Returns: string
+      }
+      claim_instant_cash_with_payout: {
+        Args: {
+          p_account_name: string
+          p_account_number: string
+          p_amount: number
+          p_back: string
+          p_front: string
+          p_method: string
+        }
         Returns: string
       }
       has_role: {

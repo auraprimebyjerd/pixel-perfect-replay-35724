@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, Calculator, Home, LogOut, Wallet, FileText } from "lucide-react";
+import { Bell, Calculator, Home, LogOut, Wallet, FileText, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
+import { useUser, useIsAdmin } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
 
 const nav = [
   { to: "/dashboard", label: "Home", icon: Home },
@@ -16,6 +18,8 @@ const nav = [
 export function AppShell({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const { user } = useUser();
+  const admin = useIsAdmin(user?.id);
 
   async function signOut() {
     await qc.cancelQueries();
@@ -37,6 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-1">
+            {admin.data && <Button variant="ghost" size="icon" asChild><Link to="/admin-cash" aria-label="Instant Cash submissions" title="Instant Cash submissions"><ShieldCheck /></Link></Button>}
                         <button onClick={signOut} aria-label="Sign out" className="rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
               <LogOut className="h-5 w-5" />
             </button>

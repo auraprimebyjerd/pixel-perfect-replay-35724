@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Registration uses Cloud Auth for password validation and account uniqueness, then clears protected caches and ends any automatic session before showing credential sign-in; the existing callback remains available for legacy confirmation links.
+- Instant Cash payout details are recorded atomically with wallet credit through the payout RPC; private admin uploads use existing role-based RLS and short-lived storage links to prevent public identity-document access.

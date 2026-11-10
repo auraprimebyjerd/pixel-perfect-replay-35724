@@ -22,10 +22,11 @@ export function useIsAdmin(userId: string | undefined) {
     queryKey: ["is-admin", userId],
     enabled: !!userId,
     queryFn: async () => {
+      if (!userId) return false;
       const { data } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", userId!)
+        .eq("user_id", userId)
         .eq("role", "admin")
         .maybeSingle();
       return !!data;

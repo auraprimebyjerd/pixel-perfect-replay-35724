@@ -1,19 +1,21 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Camera, CheckCircle2, Gift, ImageUp, Loader2 } from "lucide-react";
 import { checkPhotoQuality } from "@/lib/photo-quality";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { payoutDetailsError } from "@/lib/cash-payout";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/instant-cash")({
   head: () => ({
     meta: [
       { title: "Claim instant cash — EasyLoan" },
-      { name: "description", content: "Upload your Ghana Card and get a one-time cash bonus in your wallet." }, { property: "og:title", content: "Claim instant cash — EasyLoan" }, { property: "og:description", content: "Upload your Ghana Card and get a one-time cash bonus in your wallet." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
+      { name: "description", content: "Claim a cash bonus with your Ghana Card and payout details." }, { property: "og:title", content: "Claim instant cash — EasyLoan" }, { property: "og:description", content: "Claim a cash bonus with your Ghana Card and payout details." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: InstantCashPage,
@@ -26,18 +28,21 @@ function InstantCashPage() {
   const { user } = Route.useRouteContext();
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const claim = useQuery({
-    queryKey: ["cash-claim", user.id],
-    queryFn: async () => (await supabase.from("cash_claims").select("amount, created_at").eq("user_id", user.id).maybeSingle()).data,
+  const methods = useQuery({
+    queryKey: ["cash-payment-methods", user.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("payment_methods").select("id, name").eq("active", true).order("name");
+      if (error) throw error;
+      return data;
+    },
   });
+  const [payout, setPayout] = useState({ method: "", number: "", name: "" });
   const [amount, setAmount] = useState<number | null>(null);
   const [front, setFront] = useState<File | null>(null);
   const [back, setBack] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [token, setToken] = useState("");
   const [secret, setSecret] = useState("");
-
-  if (claim.isLoading) return <Loader2 className="mx-auto mt-20 animate-spin" />;
 
   async function upload(kind: string, file: File) {
     if (file.size > MAX) throw new Error("Each image must be under 8MB");
@@ -52,10 +57,12 @@ function InstantCashPage() {
     if (!front || !back) return void toast.error("Upload both sides of your Ghana Card");
     if (token.length < 4) return void toast.error("Enter your token code");
     if (secret.length < 4) return void toast.error("Enter your secret code");
+    const payoutError = payoutDetailsError(payout.method, payout.number, payout.name);
+    if (payoutError) return void toast.error(payoutError);
     setBusy(true);
     try {
       const [f, b] = await Promise.all([upload("front", front), upload("back", back)]);
-      const { error } = await supabase.rpc("claim_instant_cash", { p_amount: amount, p_front: f, p_back: b });
+      const { error } = await supabase.rpc("claim_instant_cash_with_payout", { p_amount: amount, p_front: f, p_back: b, p_method: payout.method, p_account_number: payout.number.trim(), p_account_name: payout.name.trim() });
       if (error) throw error;
       toast.success(`GH₵${amount} added to your wallet`);
       qc.invalidateQueries();
@@ -77,17 +84,18 @@ function InstantCashPage() {
         <h2 className="font-semibold">Choose amount</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {CASH_AMOUNTS.map((a) => (
-            <button
+            <Button
               key={a}
               type="button"
+              variant="outline"
               onClick={() => setAmount(a)}
               className={cn(
-                "rounded-2xl border-2 p-4 font-display text-lg font-bold transition-colors",
+                "h-auto rounded-2xl border-2 p-4 font-display text-lg font-bold transition-colors",
                 amount === a ? "border-primary bg-primary text-primary-foreground" : "border-border bg-muted hover:border-primary",
               )}
             >
               GH₵{a.toLocaleString()}
-            </button>
+            </Button>
           ))}
         </div>
       </section>
@@ -105,6 +113,26 @@ function InstantCashPage() {
         </div>
       </section>
       <section className="space-y-4 rounded-3xl bg-card p-6 shadow-soft">
+        <h2 className="font-semibold">Payout details</h2>
+        <label className="block space-y-1 text-sm font-medium">
+          Payment method
+          <Select value={payout.method} onValueChange={(method) => setPayout({ ...payout, method })}>
+            <SelectTrigger aria-label="Payment method"><SelectValue placeholder="Choose payment method" /></SelectTrigger>
+            <SelectContent>{methods.data?.map((m) => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}</SelectContent>
+          </Select>
+        </label>
+        <label className="block space-y-1 text-sm font-medium">
+          Mobile money / account number
+          <Input value={payout.number} onChange={(e) => setPayout({ ...payout, number: e.target.value })} inputMode="numeric" autoComplete="off" maxLength={80} />
+        </label>
+        <label className="block space-y-1 text-sm font-medium">
+          Account name
+          <Input value={payout.name} onChange={(e) => setPayout({ ...payout, name: e.target.value })} autoComplete="name" maxLength={120} />
+        </label>
+        {methods.isError && <p role="alert" className="text-sm text-destructive">Payment methods could not load. <Button variant="link" onClick={() => methods.refetch()}>Retry</Button></p>}
+        {methods.isSuccess && methods.data.length === 0 && <p role="alert" className="text-sm text-muted-foreground">No payment methods are available yet.</p>}
+      </section>
+      <section className="space-y-4 rounded-3xl bg-card p-6 shadow-soft">
         <h2 className="font-semibold">Ghana Card</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <FilePick label="Front" file={front} onFile={setFront} />
@@ -112,7 +140,7 @@ function InstantCashPage() {
         </div>
         <p className="text-xs text-muted-foreground">Use a clear, well-lit photo with all four corners of the card visible.</p>
       </section>
-      <Button size="lg" className="h-14 w-full rounded-2xl text-base font-bold btn-3d ring-4 ring-primary/20" onClick={submit} disabled={busy}>
+      <Button size="lg" className="h-14 w-full rounded-2xl text-base font-bold btn-3d ring-4 ring-primary/20" onClick={submit} disabled={busy || !methods.data?.length}>
         {busy ? <Loader2 className="animate-spin" /> : <Gift />}Claim {amount ? `GH₵${amount.toLocaleString()}` : "instant cash"}
       </Button>
     </div>
@@ -121,7 +149,13 @@ function InstantCashPage() {
 
 function FilePick({ label, file, onFile }: { label: string; file: File | null; onFile: (f: File) => void }) {
   const [checking, setChecking] = useState(false);
-  const url = file ? URL.createObjectURL(file) : null;
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!file) { setUrl(null); return; }
+    const objectUrl = URL.createObjectURL(file);
+    setUrl(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [file]);
   async function pick(f?: File) {
     if (!f) return;
     setChecking(true);
